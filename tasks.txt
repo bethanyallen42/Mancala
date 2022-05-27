@@ -1,0 +1,30 @@
+Tasks to Accomplish
+
+
+Choose between a two player game and one player game
+
+users can enter their names and have them displayed
+    computer is displayed in a one player game
+
+Game picks which player goes first and then alternate turns according to the rules
+Indicate whose turn it is
+
+
+
+create the board and pips
+    bonus add animation and make it look cool
+
+Pick a pit that has pips and is ours on our turn
+have those pips distributed correctly according to the rules
+capture opponent pips when we end in an empty pit on our side
+take and extra turn when we end in our mancala
+be told when a player wins or if there is a draw once all pips are in mancalas
+
+Start game over without having to reset the browser
+
+In one player game
+    Computer name is displayed as opponent
+    have the computer player make moves obeying all the rules from the two player game.
+
+bonus
+    computer makes smart choices not just random ones

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mancala</title>
+
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="app.js"></script>
+  </head>
+
+  <body>
+    <header>Mancala</header>
+
+    <main>
+      <!--Have these three top divs swap out on what is displayed.
+        Only have one visible at a time...Maybe I should create the 
+        2nd and 3rd in javascript...-->
+      <div id="enter_number">
+        <p>How many people are playing?</p>
+        <select name="choose_number_of_players" id="choose_number">
+          <option value="1">1</option>
+          <option value="2">2</option>
+        </select>
+        <input type="submit" value="next" id="next" />
+      </div>
+
+      <div id="enter_name">
+        <p>Please enter your name.</p>
+        <form action="">
+          <input type="text" placeholder="Player One" id="player_one_input" />
+          <input type="text" placeholder="Player Two" id="player_two_input" />
+          <input type="submit" value="Let's Play" id="ready_to_play" />
+        </form>
+      </div>
+
+      <div id="vs">vs.</div>
+    </main>
+  </body>
+</html>
