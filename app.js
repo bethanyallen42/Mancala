@@ -15,12 +15,13 @@ const verses = document.querySelector("#vs");
 
 enterName.style.display = "none";
 verses.style.display = "none";
-let currentPlayer;
+
 next.addEventListener("click", () => {
   numOfPlayers = parseInt(chooseNumber.value);
 
   if (numOfPlayers === 1) {
     playerTwoInput.remove();
+    playerTwo = "Computer";
   }
 
   enterNumber.style.display = "none";
@@ -30,31 +31,41 @@ next.addEventListener("click", () => {
 readyToPlay.addEventListener("click", (e) => {
   e.preventDefault();
   playerOne = playerOneInput.value;
-  playerTwo = playerTwoInput.value;
 
   if (numOfPlayers === 1) {
-    verses.innerText = `${playerOne} vs. Computer`;
+    verses.innerText = `${playerOne} vs. ${playerTwo}`;
   } else {
+    playerTwo = playerTwoInput.value;
     verses.innerText = `${playerOne} vs. ${playerTwo}`;
   }
 
   enterName.style.display = "none";
   verses.style.display = "block";
-  chooseStartingPlayer();
+  buildInitialState();
 });
-//--------------
 
-const board = {
-  playerOneBoxes: [0, 4, 4, 4, 4, 4, 4],
-  playerTwoBoxes: [4, 4, 4, 4, 4, 4, 0],
-};
-const boxesOne = document.querySelectorAll(".box1");
-const boxesTwo = document.querySelectorAll(".box2");
-//let currentPlayer;
+//--------------build Initial state--------------
+
+let pipArray;
+let currentPlayer;
+
 function buildInitialState() {
-  boxesOne.forEach((box, index) => {
-    let pipArray = board.playerOneBoxes;
-    let numOfPips = pipArray[index];
+  pipArray = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0];
+  //index 6 and 13 are mancalas
+  placePips();
+  chooseBeginningPlayer();
+  whoseTurn();
+}
+
+function chooseBeginningPlayer() {
+  currentPlayer = Math.floor(Math.random() * 2) + 1;
+  console.log(currentPlayer);
+}
+
+function placePips() {
+  pipArray.forEach((numOfPips, index) => {
+    const box = document.querySelector(`#box-${index}`);
+    box.innerHTML = "";
 
     for (let i = 0; i < numOfPips; i++) {
       let pip = document.createElement("div");
@@ -62,10 +73,81 @@ function buildInitialState() {
       box.appendChild(pip);
     }
   });
-
-  boxesTwo.forEach((box, index) => {
-    box.innerText = index;
-  });
 }
 
-buildInitialState();
+const displayTurn = document.querySelector("#whose_turn");
+function whoseTurn() {
+  if (currentPlayer === 1) {
+    displayTurn.innerText = `${playerOne}'s Turn`;
+  } else {
+    displayTurn.innerText = `${playerTwo}'s Turn`;
+  }
+}
+
+//------------------Take a turn-----------------
+const board = document.querySelector(".board");
+
+board.addEventListener("click", (e) => {
+  console.log(e.target.className);
+  if (isYourPit(e)) {
+    turn(e);
+    placePips();
+  }
+});
+
+function isYourPit(event) {
+  if (event.target.classList.contains("mancala")) {
+    alert("You can not choose a mancala.  Please choose a pit on your side");
+    return false;
+  }
+
+  if (
+    currentPlayer === 1 &&
+    event.target.classList.contains("player_two_box")
+  ) {
+    alert("Choose a pit on your side.");
+    return false;
+  } else if (
+    currentPlayer === 2 &&
+    event.target.classList.contains("player_one_box")
+  ) {
+    alert("Choose a pit on your side.");
+    return false;
+  }
+
+  return true;
+}
+
+function turn(event) {
+  let target = event.target;
+  let index = parseInt(target.id.replace(/\D/g, ""));
+
+  let hand = pipArray[index];
+  pipArray[index] = 0;
+  console.log(index);
+  for (let i = 1; i <= hand; i++) {
+    let currentIndex = (index + i) % 14;
+    pipArray[currentIndex]++;
+  }
+
+  changePlayer();
+
+  console.log(pipArray);
+}
+
+function changePlayer() {
+  if (currentPlayer === 1) {
+    currentPlayer = 2;
+  } else {
+    currentPlayer = 1;
+  }
+  whoseTurn();
+}
+
+function extraTurn() {
+  if (target.classList.contains("mancala")) {
+    displayTurn.innerText = `${currentPlayer} gets another turn!`;
+  } else {
+    changePlayer();
+  }
+}
