@@ -17,7 +17,7 @@
   </head>
 
   <body>
-    <header>Mancala</header>
+    <header>Mancala-new</header>
 
     <main>
       <div id="enter_number" class="player_info">
@@ -61,5 +61,24 @@
       </div>
       <div id="whose_turn"></div>
     </main>
+      <!--Create a hidden div that pops up with alerts-->
+      <div id="alert_wrapper" class="popup_wrapper">
+        <div id="alert" class="popup">
+          <p id="message"></p>
+          <button class="close" id="close_alert">Ok</button>
+        </div>
+      </div>
+    
+      <!--Create another hidden div that is a modal that shares who the winner is?-->
+      <div id="winner_window" class="popup_wrapper">
+        <div id="winner_inner_window" class="popup">
+          <p id="winner"></p>
+          <p>Would you like to play again?</p>
+          <div>
+            <button class="reset" id="new_game_reset">Yes!</button>
+            <button class="close" id="close_modal">No</button>
+          </div>
+        </div>
+      </div>
   </body>
 </html>

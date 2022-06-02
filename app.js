@@ -67,7 +67,7 @@ readyToPlay.addEventListener("click", (e) => {
 
 function buildInitialState() {
   game.pipArray = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0];
-
+  //game.pipArray = [0, 0, 0, 0, 0, 1, 5, 0, 0, 0, 0, 0, 1, 0];
   placePips();
   chooseBeginningPlayer();
   whoseTurn();
@@ -100,6 +100,18 @@ function whoseTurn() {
 }
 
 //------------------Take a turn-----------------
+const alertWindow = document.querySelector("#alert_wrapper");
+const closeAlert = document.querySelector("#close_alert");
+const alertMessage = document.querySelector("#message");
+
+const winnerWindow = document.querySelector("#winner_window");
+const announceWinner = document.querySelector("#winner");
+const newGameReset = document.querySelector("#new_game_reset");
+const closeModal = document.querySelector("#close_modal");
+
+winnerWindow.style.display = "none";
+alertWindow.style.display = "none";
+
 const board = document.querySelector(".board");
 
 board.addEventListener("click", (e) => {
@@ -110,19 +122,23 @@ board.addEventListener("click", (e) => {
 
 function isValidPit(event) {
   if (event.target.classList.contains("mancala")) {
-    alert("You cannot choose a mancala.  Please choose a pit.");
+    alertMessage.innerText =
+      "You cannot choose a mancala.  Please choose a pit.";
+    alertWindow.style.display = "flex";
     return false;
   }
 
   if (game.currentPlayer != event.target.dataset.player) {
-    alert("Choose a pit on your side.");
+    alertMessage.innerText = "Choose a pit on your side.";
+    alertWindow.style.display = "flex";
     return false;
   }
 
   let index = parseInt(event.target.dataset.index);
 
   if (game.pipArray[index] === 0) {
-    alert("This pit is empty.  Please choose another.");
+    alertMessage.innerText = "This pit is empty.  Please choose another.";
+    alertWindow.style.display = "flex";
     return false;
   }
 
@@ -130,27 +146,28 @@ function isValidPit(event) {
 }
 
 function turn(event) {
+  console.log("Beginning of turn " + game.pipArray);
   let index = parseInt(event.target.dataset.index);
   let hand = game.pipArray[index];
 
   game.pipArray[index] = 0;
-
-  let currentIndex = movePips(hand, index);
-  const box = document.querySelector(`[data-index="${currentIndex}"]`);
+  let endIndex = movePips(hand, index);
+  const box = document.querySelector(`[data-index="${endIndex}"]`);
 
   if (
-    game.pipArray[currentIndex] === 1 &&
-    box.dataset.player == game.currentPlayer
+    game.pipArray[endIndex] === 1 &&
+    box.dataset.player == game.currentPlayer &&
+    !box.classList.contains("mancala")
   ) {
-    stealPips(currentIndex);
+    stealPips(endIndex);
   }
 
   placePips();
 
   if (isSideEmpty()) {
     gameOver();
-    placePips();
     whoWins();
+    //setTimeout(whoWins, 1000);
     return;
   }
 
@@ -162,9 +179,10 @@ function turn(event) {
 }
 
 function movePips(numOfPips, pitIndex) {
+  let currentIndex;
   for (let i = 1; i <= numOfPips; i++) {
     currentIndex = (pitIndex + i) % 14;
-
+    console.log(game.currentPlayer);
     if (game.currentPlayer === 1 && currentIndex === 13) {
       numOfPips++;
       continue;
@@ -174,6 +192,7 @@ function movePips(numOfPips, pitIndex) {
     }
     game.pipArray[currentIndex]++;
   }
+  console.log(game.pipArray);
   return currentIndex;
 }
 
@@ -219,10 +238,11 @@ function isSideEmpty() {
 }
 
 function gameOver() {
+  console.log(game.pipArray);
   let sum1 = 0;
   let sum2 = 0;
 
-  for (let i = 0; i < game.pipArray.length; i++) {
+  for (let i = 0; i <= game.pipArray.length; i++) {
     if (i < 7) {
       sum1 += game.pipArray[i];
       game.pipArray[i] = 0;
@@ -234,6 +254,8 @@ function gameOver() {
 
   game.pipArray[6] = sum1;
   game.pipArray[13] = sum2;
+  console.log(game.pipArray);
+  placePips();
 }
 
 function whoWins() {
@@ -245,9 +267,26 @@ function whoWins() {
       game.winner = game.playerTwo;
       break;
     default:
-      alert("It's a tie!");
+      announceWinner.innerText = "It's a tie!";
+      winnerWindow.style.display = "flex";
+
       return;
   }
 
-  alert(game.winner + " wins!");
+  announceWinner.innerText = `${game.winner} wins!`;
+  winnerWindow.style.display = "flex";
 }
+
+//--------------------Button event listeners-----------------
+closeAlert.addEventListener("click", () => {
+  alertWindow.style.display = "none";
+});
+
+closeModal.addEventListener("click", () => {
+  winnerWindow.style.display = "none";
+});
+
+newGameReset.addEventListener("click", () => {
+  buildInitialState();
+  winnerWindow.style.display = "none";
+});
