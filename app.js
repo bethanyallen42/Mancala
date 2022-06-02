@@ -22,7 +22,9 @@ let game = {
   currentPlayer: 0,
   winner: "",
 };
+
 //---------------Gathering Player info--------------
+
 let next = document.querySelector("#next");
 let chooseNumber = document.querySelector("#choose_number");
 let readyToPlay = document.querySelector("#ready_to_play");
@@ -108,20 +110,11 @@ board.addEventListener("click", (e) => {
 
 function isValidPit(event) {
   if (event.target.classList.contains("mancala")) {
-    alert("You cannot choose a mancala.  Please choose a pit on your side");
+    alert("You cannot choose a mancala.  Please choose a pit.");
     return false;
   }
 
-  if (
-    game.currentPlayer === 1 &&
-    event.target.classList.contains("player_two_box")
-  ) {
-    alert("Choose a pit on your side.");
-    return false;
-  } else if (
-    game.currentPlayer === 2 &&
-    event.target.classList.contains("player_one_box")
-  ) {
+  if (game.currentPlayer != event.target.dataset.player) {
     alert("Choose a pit on your side.");
     return false;
   }
@@ -138,46 +131,18 @@ function isValidPit(event) {
 
 function turn(event) {
   let index = parseInt(event.target.dataset.index);
-
   let hand = game.pipArray[index];
+
   game.pipArray[index] = 0;
 
-  let currentIndex;
-  for (let i = 1; i <= hand; i++) {
-    currentIndex = (index + i) % 14;
-
-    if (game.currentPlayer === 1 && currentIndex === 13) {
-      hand++;
-      continue;
-    } else if (game.currentPlayer === 2 && currentIndex === 6) {
-      hand++;
-      continue;
-    }
-    game.pipArray[currentIndex]++;
-  }
-
-  let oppositeIndex = game.opposites[currentIndex];
+  let currentIndex = movePips(hand, index);
   const box = document.querySelector(`[data-index="${currentIndex}"]`);
 
-  //can I place this in a seperate function? maybe the section that's in the if block
   if (
     game.pipArray[currentIndex] === 1 &&
-    box.classList.contains("player_one_box") &&
-    game.currentPlayer === 1
+    box.dataset.player == game.currentPlayer
   ) {
-    let stealNumber = game.pipArray[oppositeIndex];
-    game.pipArray[oppositeIndex] = 0;
-    game.pipArray[6] += stealNumber;
-  }
-
-  if (
-    game.pipArray[currentIndex] === 1 &&
-    box.classList.contains("player_two_box") &&
-    game.currentPlayer === 2
-  ) {
-    let stealNumber = game.pipArray[oppositeIndex];
-    game.pipArray[oppositeIndex] = 0;
-    game.pipArray[13] += stealNumber;
+    stealPips(currentIndex);
   }
 
   placePips();
@@ -196,6 +161,35 @@ function turn(event) {
   }
 }
 
+function movePips(numOfPips, pitIndex) {
+  for (let i = 1; i <= numOfPips; i++) {
+    currentIndex = (pitIndex + i) % 14;
+
+    if (game.currentPlayer === 1 && currentIndex === 13) {
+      numOfPips++;
+      continue;
+    } else if (game.currentPlayer === 2 && currentIndex === 6) {
+      numOfPips++;
+      continue;
+    }
+    game.pipArray[currentIndex]++;
+  }
+  return currentIndex;
+}
+
+function stealPips(index) {
+  let oppositeIndex = game.opposites[index];
+  let stealNumber = game.pipArray[oppositeIndex];
+
+  if (game.currentPlayer === 1) {
+    game.pipArray[oppositeIndex] = 0;
+    game.pipArray[6] += stealNumber;
+  } else {
+    game.pipArray[oppositeIndex] = 0;
+    game.pipArray[13] += stealNumber;
+  }
+}
+
 function changePlayer() {
   if (game.currentPlayer === 1) {
     game.currentPlayer = 2;
@@ -204,9 +198,6 @@ function changePlayer() {
   }
   whoseTurn();
 }
-
-//function to steal pips? take code from turn...
-//function to check if one side of pits is empty--should check this every turn
 
 function isSideEmpty() {
   let sum1 = 0;
@@ -244,16 +235,18 @@ function gameOver() {
   game.pipArray[6] = sum1;
   game.pipArray[13] = sum2;
 }
-//function to see who is the game.winner
 
 function whoWins() {
-  if (game.pipArray[6] === game.pipArray[13]) {
-    alert("It's a tie!");
-    return;
-  } else if (game.pipArray[6] > game.pipArray[13]) {
-    game.winner = game.playerOne;
-  } else {
-    game.winner = game.playerTwo;
+  switch (true) {
+    case game.pipArray[6] > game.pipArray[13]:
+      game.winner = game.playerOne;
+      break;
+    case game.pipArray[6] < game.pipArray[13]:
+      game.winner = game.playerTwo;
+      break;
+    default:
+      alert("It's a tie!");
+      return;
   }
 
   alert(game.winner + " wins!");
