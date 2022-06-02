@@ -22,17 +22,36 @@ header {
   text-align: center;
 }
 
+#enter_name {
+  display: none;
+}
+
+#vs {
+  display: none;
+  margin-bottom: 15px;
+  color: #6600cc;
+}
+
+.side {
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+}
+
 .board {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  border: 1px solid black;
-  margin: 30px;
+  border: 3px solid black;
+  margin: 5px;
+  padding: 2px;
 }
 
 .mancala {
-  height: 200px;
-  width: 100px;
+  height: 250px;
+  width: 150px;
 
   border: 1px solid black;
   display: flex;
@@ -44,12 +63,12 @@ header {
 .pit_wrapper {
   display: flex;
   flex-flow: row wrap;
-  width: 600px;
+  width: 750px;
 }
 
 .pit {
-  height: 100px;
-  width: 100px;
+  height: 125px;
+  width: 125px;
   border: 1px solid black;
   display: flex;
   justify-content: center;
@@ -69,6 +88,49 @@ header {
 }
 
 .popup_wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 .popup {
+  height: 200px;
+  width: 300px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#alert {
+  border: 5px solid #6600cc;
+  background-color: #e9ebf8;
+  bottom: 10vh;
+}
+
+#winner {
+  font-size: 50px;
+}
+
+#winner_inner_window {
+  height: 300px;
+  width: 400px;
+  background-color: #fff;
+  border: 5px solid #000;
+}
+
+#winner_window {
+  background: linear-gradient(to bottom left, #33ccff 0%, #6600cc 100%);
+}
+
+button,
+input,
+select {
+  padding: 3px 8px;
 }

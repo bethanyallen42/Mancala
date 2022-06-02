@@ -33,13 +33,15 @@ let playerTwoInput = document.querySelector("#player_two_input");
 
 const enterNumber = document.querySelector("#enter_number");
 const enterName = document.querySelector("#enter_name");
-const verses = document.querySelector("#vs");
+const displayTurn = document.querySelector("#vs");
+const playerOneSide = document.querySelector("#player_one_side");
+const playerTwoSide = document.querySelector("#player_two_side");
 
 next.addEventListener("click", () => {
   game.numOfPlayers = parseInt(chooseNumber.value);
 
   if (game.numOfPlayers === 1) {
-    game.playerTwoInput.remove();
+    playerTwoInput.remove();
     game.playerTwo = "Computer";
   }
 
@@ -51,15 +53,16 @@ readyToPlay.addEventListener("click", (e) => {
   e.preventDefault();
   game.playerOne = playerOneInput.value;
 
-  if (game.numOfPlayers === 1) {
-    verses.innerText = `${game.playerOne} vs. ${game.playerTwo}`;
-  } else {
+  if (game.numOfPlayers === 2) {
     game.playerTwo = playerTwoInput.value;
-    verses.innerText = `${game.playerOne} vs. ${game.playerTwo}`;
   }
 
+  playerOneSide.innerText = `${game.playerOne}'s side`;
+  playerTwoSide.innerText = `${game.playerTwo}'s side`;
+
   enterName.style.display = "none";
-  verses.style.display = "block";
+  displayTurn.style.fontSize = "20px";
+  displayTurn.style.display = "block";
   currentGame = buildInitialState();
 });
 
@@ -67,7 +70,7 @@ readyToPlay.addEventListener("click", (e) => {
 
 function buildInitialState() {
   game.pipArray = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0];
-  //game.pipArray = [0, 0, 0, 0, 0, 1, 5, 0, 0, 0, 0, 0, 1, 0];
+  //game.pipArray = [0, 0, 0, 0, 0, 1, 5, 0, 0, 0, 0, 0, 1, 5];
   placePips();
   chooseBeginningPlayer();
   whoseTurn();
@@ -90,7 +93,6 @@ function placePips() {
   });
 }
 
-const displayTurn = document.querySelector("#whose_turn");
 function whoseTurn() {
   if (game.currentPlayer === 1) {
     displayTurn.innerText = `${game.playerOne}'s Turn`;
@@ -146,7 +148,6 @@ function isValidPit(event) {
 }
 
 function turn(event) {
-  console.log("Beginning of turn " + game.pipArray);
   let index = parseInt(event.target.dataset.index);
   let hand = game.pipArray[index];
 
@@ -165,9 +166,8 @@ function turn(event) {
   placePips();
 
   if (isSideEmpty()) {
-    gameOver();
-    whoWins();
-    //setTimeout(whoWins, 1000);
+    gameOver(whoWins);
+
     return;
   }
 
@@ -182,7 +182,6 @@ function movePips(numOfPips, pitIndex) {
   let currentIndex;
   for (let i = 1; i <= numOfPips; i++) {
     currentIndex = (pitIndex + i) % 14;
-    console.log(game.currentPlayer);
     if (game.currentPlayer === 1 && currentIndex === 13) {
       numOfPips++;
       continue;
@@ -192,7 +191,7 @@ function movePips(numOfPips, pitIndex) {
     }
     game.pipArray[currentIndex]++;
   }
-  console.log(game.pipArray);
+
   return currentIndex;
 }
 
@@ -237,12 +236,11 @@ function isSideEmpty() {
   }
 }
 
-function gameOver() {
-  console.log(game.pipArray);
+function gameOver(callback) {
   let sum1 = 0;
   let sum2 = 0;
 
-  for (let i = 0; i <= game.pipArray.length; i++) {
+  for (let i = 0; i < game.pipArray.length; i++) {
     if (i < 7) {
       sum1 += game.pipArray[i];
       game.pipArray[i] = 0;
@@ -254,8 +252,9 @@ function gameOver() {
 
   game.pipArray[6] = sum1;
   game.pipArray[13] = sum2;
-  console.log(game.pipArray);
+
   placePips();
+  setTimeout(callback, 1000);
 }
 
 function whoWins() {
@@ -269,7 +268,6 @@ function whoWins() {
     default:
       announceWinner.innerText = "It's a tie!";
       winnerWindow.style.display = "flex";
-
       return;
   }
 
