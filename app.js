@@ -1,5 +1,4 @@
 //-----------------game object-----------------------
-
 let game = {
   numOfPlayers: 0,
   playerOne: "",
@@ -35,7 +34,9 @@ const enterNumber = document.querySelector("#enter_number");
 const enterName = document.querySelector("#enter_name");
 const displayTurn = document.querySelector("#vs");
 const playerOneSide = document.querySelector("#player_one_side");
+const playerOneMancala = document.querySelector("#player_one_mancala");
 const playerTwoSide = document.querySelector("#player_two_side");
+const playerTwoMancala = document.querySelector("#player_two_mancala");
 
 next.addEventListener("click", () => {
   game.numOfPlayers = parseInt(chooseNumber.value);
@@ -58,19 +59,25 @@ readyToPlay.addEventListener("click", (e) => {
   }
 
   playerOneSide.innerText = `${game.playerOne}'s side`;
+  playerOneMancala.innerText = `${game.playerOne}'s mancala`;
   playerTwoSide.innerText = `${game.playerTwo}'s side`;
+  playerTwoMancala.innerText = `${game.playerTwo}'s mancala`;
 
   enterName.style.display = "none";
   displayTurn.style.fontSize = "20px";
   displayTurn.style.display = "block";
   currentGame = buildInitialState();
+
+  if (isComputer) {
+    setTimeout(turn, 2000);
+  }
 });
 
 //--------------build Initial state--------------
 
 function buildInitialState() {
   game.pipArray = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0];
-  //game.pipArray = [0, 0, 0, 0, 0, 1, 5, 0, 0, 0, 0, 0, 1, 5];
+  // for testing game.pipArray = [1, 1, 1, 1, 1, 1, 5, 0, 0, 0, 0, 1, 1, 5];
   placePips();
   chooseBeginningPlayer();
   whoseTurn();
@@ -123,6 +130,12 @@ board.addEventListener("click", (e) => {
 });
 
 function isValidPit(event) {
+  if (isComputer()) {
+    alertMessage.innerText = "It is not your turn.";
+    alertWindow.style.display = "flex";
+    return false;
+  }
+
   if (event.target.classList.contains("mancala")) {
     alertMessage.innerText =
       "You cannot choose a mancala.  Please choose a pit.";
@@ -148,10 +161,28 @@ function isValidPit(event) {
 }
 
 function turn(event) {
-  let index = parseInt(event.target.dataset.index);
-  let hand = game.pipArray[index];
+  let index;
+  let hand;
+  //how do I stop the computer from choosing a random box that is empty
+  if (isComputer()) {
+    index = isValidComputerPit();
 
+    //index = Math.floor(Math.random() * 6) + 7;
+
+    // if (game.pipArray[index] === 0) {
+    //   console.log("The computer chose and empty box " + index);
+    //   turn();
+    //   return;
+    // }
+  } else {
+    //event is undefined during the commputer's turn...does that matter?
+
+    index = parseInt(event.target.dataset.index);
+  }
+
+  hand = game.pipArray[index];
   game.pipArray[index] = 0;
+
   let endIndex = movePips(hand, index);
   const box = document.querySelector(`[data-index="${endIndex}"]`);
 
@@ -167,7 +198,6 @@ function turn(event) {
 
   if (isSideEmpty()) {
     gameOver(whoWins);
-
     return;
   }
 
@@ -175,6 +205,10 @@ function turn(event) {
     displayTurn.innerText = `You get another turn!`;
   } else {
     changePlayer();
+  }
+
+  if (isComputer()) {
+    setTimeout(turn, 2000);
   }
 }
 
@@ -215,6 +249,29 @@ function changePlayer() {
     game.currentPlayer = 1;
   }
   whoseTurn();
+}
+
+function isComputer() {
+  if (game.currentPlayer === 2 && game.playerTwo === "Computer") {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function isValidComputerPit() {
+  let validIndexes = [];
+
+  for (i = 7; i < game.pipArray.length - 1; i++) {
+    if (game.pipArray[i] != 0) {
+      validIndexes.push(i);
+    }
+  }
+
+  let random = Math.floor(Math.random() * validIndexes.length);
+  let validPitIndex = validIndexes[random];
+
+  return validPitIndex;
 }
 
 function isSideEmpty() {
@@ -286,5 +343,8 @@ closeModal.addEventListener("click", () => {
 
 newGameReset.addEventListener("click", () => {
   buildInitialState();
+  if (isComputer) {
+    setTimeout(turn, 2000);
+  }
   winnerWindow.style.display = "none";
 });

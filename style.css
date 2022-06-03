@@ -32,12 +32,32 @@ header {
   color: #6600cc;
 }
 
-.side {
+.board_info_1,
+.board_info_2 {
   height: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   font-size: 14px;
+}
+
+.board_info_1 {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#player_one_mancala {
+  margin-left: 10px;
+  margin-right: 40px;
+}
+
+.board_info_2 {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+#player_two_mancala {
+  margin-right: 10px;
+  margin-left: 40px;
 }
 
 .board {

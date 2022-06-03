@@ -17,7 +17,7 @@
   </head>
 
   <body>
-    <header>Mancala-new</header>
+    <header>Mancala</header>
 
     <main>
       <div id="enter_number" class="player_info">
@@ -39,7 +39,10 @@
       </div>
 
       <div id="vs" class="player_info"></div>
-      <p id="player_one_side" class="side"></p>
+      <div class="board_info_1">
+        <p id="player_one_mancala"></p>
+        <p id="player_one_side" class="side"></p>
+      </div>
       <div class="board">
         <div class="mancala" data-index="6" data-player="1"></div>
         <div class="pit_wrapper">
@@ -58,7 +61,10 @@
         </div>
         <div class="mancala" data-index="13" data-player="2" id="box-13"></div>
       </div>
-      <p id="player_two_side" class="side"></p>
+      <div class="board_info_2">
+        <p id="player_two_side" class="side"></p>
+        <p id="player_two_mancala"></p>
+      </div>
     </main>
 
     <div id="alert_wrapper" class="popup_wrapper">
