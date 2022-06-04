@@ -27,8 +27,9 @@ let game = {
 let next = document.querySelector("#next");
 let chooseNumber = document.querySelector("#choose_number");
 let readyToPlay = document.querySelector("#ready_to_play");
-let playerOneInput = document.querySelector("#player_one_input");
-let playerTwoInput = document.querySelector("#player_two_input");
+const nameForm = document.querySelector("form");
+let player1Input;
+let player2Input;
 
 const enterNumber = document.querySelector("#enter_number");
 const enterName = document.querySelector("#enter_name");
@@ -38,13 +39,32 @@ const playerOneMancala = document.querySelector("#player_one_mancala");
 const playerTwoSide = document.querySelector("#player_two_side");
 const playerTwoMancala = document.querySelector("#player_two_mancala");
 
+function createInputs(num) {
+  for (let i = num; i > 0; i--) {
+    let input = document.createElement("input");
+    input.setAttribute("type", "text");
+    input.setAttribute("Placeholder", `Player ${i}`);
+    input.setAttribute("id", `player_${i}_input`);
+    nameForm.prepend(input);
+    console.log(input);
+  }
+
+  player1Input = document.querySelector("#player_1_input");
+
+  if (game.numOfPlayers === 2) {
+    player2Input = document.querySelector("#player_2_input");
+  }
+}
+
 next.addEventListener("click", () => {
   game.numOfPlayers = parseInt(chooseNumber.value);
 
   if (game.numOfPlayers === 1) {
-    playerTwoInput.remove();
     game.playerTwo = "Computer";
   }
+
+  createInputs(game.numOfPlayers);
+  console.log(player1Input, player2Input);
 
   enterNumber.style.display = "none";
   enterName.style.display = "block";
@@ -52,10 +72,10 @@ next.addEventListener("click", () => {
 
 readyToPlay.addEventListener("click", (e) => {
   e.preventDefault();
-  game.playerOne = playerOneInput.value;
+  game.playerOne = player1Input.value;
 
   if (game.numOfPlayers === 2) {
-    game.playerTwo = playerTwoInput.value;
+    game.playerTwo = player2Input.value;
   }
 
   playerOneSide.innerText = `${game.playerOne}'s side`;
@@ -76,8 +96,8 @@ readyToPlay.addEventListener("click", (e) => {
 //--------------build Initial state--------------
 
 function buildInitialState() {
-  //game.pipArray = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0];
-  game.pipArray = [1, 1, 1, 1, 1, 1, 5, 0, 0, 0, 0, 1, 1, 5];
+  game.pipArray = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0];
+  //game.pipArray = [1, 1, 1, 1, 1, 1, 5, 0, 0, 0, 0, 1, 1, 5]; //for testing purposes
   placePips();
   chooseBeginningPlayer();
   whoseTurn();
@@ -331,35 +351,12 @@ closeModal.addEventListener("click", () => {
   winnerWindow.style.display = "none";
 });
 
-// newGameReset.addEventListener("click", () => {
-//   buildInitialState();
-//   if (isComputer) {
-//     setTimeout(turn, 2000);
-//   }
-//   winnerWindow.style.display = "none";
-// });
-
-// const reset = document.querySelector("#reset");
-
-// reset.addEventListener("click", () => {
-//   displayTurn.style.display = "none";
-//   enterNumber.style.display = "block";
-
-//   playerOneSide.innerText = "";
-//   playerOneMancala.innerText = "";
-//   playerTwoSide.innerText = "";
-//   playerTwoMancala.innerText = "";
-
-//   game.pipArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-//   placePips();
-// });
-
 const reset = document.querySelectorAll(".reset");
-const nameForm = document.querySelector("form");
 
 reset.forEach((button) => {
   button.addEventListener("click", () => {
-    nameForm.reset();
+    nameForm.innerHTML =
+      '<input type="submit" value="Let\'s Play" id="ready_to_play" />';
     displayTurn.style.display = "none";
     enterName.style.display = "none";
     enterNumber.style.display = "block";
