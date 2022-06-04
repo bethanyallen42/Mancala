@@ -64,8 +64,8 @@ readyToPlay.addEventListener("click", (e) => {
   playerTwoMancala.innerText = `${game.playerTwo}'s mancala`;
 
   enterName.style.display = "none";
-  displayTurn.style.fontSize = "20px";
   displayTurn.style.display = "block";
+
   currentGame = buildInitialState();
 
   if (isComputer) {
@@ -76,8 +76,8 @@ readyToPlay.addEventListener("click", (e) => {
 //--------------build Initial state--------------
 
 function buildInitialState() {
-  game.pipArray = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0];
-  // for testing game.pipArray = [1, 1, 1, 1, 1, 1, 5, 0, 0, 0, 0, 1, 1, 5];
+  //game.pipArray = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0];
+  game.pipArray = [1, 1, 1, 1, 1, 1, 5, 0, 0, 0, 0, 1, 1, 5];
   placePips();
   chooseBeginningPlayer();
   whoseTurn();
@@ -163,20 +163,10 @@ function isValidPit(event) {
 function turn(event) {
   let index;
   let hand;
-  //how do I stop the computer from choosing a random box that is empty
+
   if (isComputer()) {
     index = isValidComputerPit();
-
-    //index = Math.floor(Math.random() * 6) + 7;
-
-    // if (game.pipArray[index] === 0) {
-    //   console.log("The computer chose and empty box " + index);
-    //   turn();
-    //   return;
-    // }
   } else {
-    //event is undefined during the commputer's turn...does that matter?
-
     index = parseInt(event.target.dataset.index);
   }
 
@@ -341,10 +331,47 @@ closeModal.addEventListener("click", () => {
   winnerWindow.style.display = "none";
 });
 
-newGameReset.addEventListener("click", () => {
-  buildInitialState();
-  if (isComputer) {
-    setTimeout(turn, 2000);
-  }
-  winnerWindow.style.display = "none";
+// newGameReset.addEventListener("click", () => {
+//   buildInitialState();
+//   if (isComputer) {
+//     setTimeout(turn, 2000);
+//   }
+//   winnerWindow.style.display = "none";
+// });
+
+// const reset = document.querySelector("#reset");
+
+// reset.addEventListener("click", () => {
+//   displayTurn.style.display = "none";
+//   enterNumber.style.display = "block";
+
+//   playerOneSide.innerText = "";
+//   playerOneMancala.innerText = "";
+//   playerTwoSide.innerText = "";
+//   playerTwoMancala.innerText = "";
+
+//   game.pipArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+//   placePips();
+// });
+
+const reset = document.querySelectorAll(".reset");
+const nameForm = document.querySelector("form");
+
+reset.forEach((button) => {
+  button.addEventListener("click", () => {
+    nameForm.reset();
+    displayTurn.style.display = "none";
+    enterName.style.display = "none";
+    enterNumber.style.display = "block";
+
+    playerOneSide.innerText = "";
+    playerOneMancala.innerText = "";
+    playerTwoSide.innerText = "";
+    playerTwoMancala.innerText = "";
+
+    game.pipArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    placePips();
+
+    winnerWindow.style.display = "none";
+  });
 });
