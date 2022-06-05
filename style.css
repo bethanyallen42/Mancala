@@ -105,7 +105,9 @@ header {
   border-radius: 50%;
   margin: 3px;
   box-shadow: 5px 5px 3px -3px #000000;
-  z-index: -1;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 500ms;
 }
 
 .popup_wrapper {
@@ -154,4 +156,9 @@ button,
 input,
 select {
   padding: 3px 8px;
+}
+
+.addPip .pip:last-child {
+  /* opacity: 0;
+  transition: opacity 500ms; */
 }
