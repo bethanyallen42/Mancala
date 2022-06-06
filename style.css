@@ -157,8 +157,3 @@ input,
 select {
   padding: 3px 8px;
 }
-
-.addPip .pip:last-child {
-  /* opacity: 0;
-  transition: opacity 500ms; */
-}

@@ -111,9 +111,21 @@ function placePips() {
     box.innerHTML = "";
 
     for (let i = 0; i < numOfPips; i++) {
-      let pip = document.createElement("div");
-      pip.className = "pip";
-      box.appendChild(pip);
+      let currentPip = document.createElement("div");
+      currentPip.className = "pip";
+      box.appendChild(currentPip);
+    }
+
+    if (box.classList.contains("addPip")) {
+      let addedPip = box.lastElementChild;
+      if (addedPip) {
+        addedPip.style.opacity = "0";
+        addedPip.style.transition = "opacity 1000ms";
+        setTimeout(() => {
+          addedPip.style.opacity = "1";
+        }, 300);
+      }
+      box.classList.remove("addPip");
     }
   });
 }
@@ -181,23 +193,18 @@ function isValidPit(event) {
 function turn(event) {
   let index;
   let hand;
-  let target;
 
   if (isComputer()) {
     index = isValidComputerPit();
   } else {
     index = parseInt(event.target.dataset.index);
-    target = event.target;
-    console.log("my target??? " + target);
   }
-
+  const firstBox = document.querySelector(`[data-index="${index}"]`);
   hand = game.pipArray[index];
   game.pipArray[index] = 0;
 
   let endIndex = movePips(hand, index);
   const box = document.querySelector(`[data-index="${endIndex}"]`);
-
-  fadePips(target, placePips);
 
   if (
     game.pipArray[endIndex] === 1 &&
@@ -207,7 +214,7 @@ function turn(event) {
     stealPips(endIndex);
   }
 
-  fadePips(target, placePips);
+  fadePips(firstBox, placePips);
 
   if (isSideEmpty()) {
     gameOver(whoWins);
@@ -239,7 +246,6 @@ function movePips(numOfPips, pitIndex) {
     game.pipArray[currentIndex]++;
     const box = document.querySelector(`[data-index="${currentIndex}"]`);
     box.classList.add("addPip");
-    console.log(box.classList + " classList and dataset " + box.dataset.index);
   }
 
   return currentIndex;
@@ -249,12 +255,10 @@ function stealPips(index) {
   let oppositeIndex = game.opposites[index];
   let stealNumber = game.pipArray[oppositeIndex];
   let oppositeBox = document.querySelector(`[data-index="${oppositeIndex}"]`);
-  //console.log("opposite box" + oppositeBox);
-
-  // setTimeout(fadePips(oppositeBox, placePips), 3000);
-  // setTimeout(() => {
-  //   fadePips(oppositeBox, placePips);
-  // }, 1000);
+  //this could still use some work.
+  setTimeout(() => {
+    fadePips(oppositeBox, placePips);
+  }, 1000);
 
   if (game.currentPlayer === 1) {
     game.pipArray[oppositeIndex] = 0;
@@ -267,7 +271,6 @@ function stealPips(index) {
 
 function fadePips(pit, callback) {
   let pips = [...pit.children];
-  console.log(pips);
   pips.forEach((pip) => {
     pip.style.opacity = 0;
   });
